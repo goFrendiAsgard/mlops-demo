@@ -1,0 +1,18 @@
+configs:
+
+  mlopsModelTrainer:
+    ports: |
+      
+ 
+  mlopsModelTrainerHelm:
+    releaseName: mlops-model-trainer
+    chart: helm/charts/app
+    valueFile: helm/values/mlopsModelTrainer.yaml
+    valueTemplateFile: helm/value-templates/app.yaml 
+
+  mlopsModelTrainerContainer:
+    containerName: mlopsModelTrainer
+    imagePrefix: '{{ .GetValue "defaultImagePrefix" }}'
+    imageName: mlops-model-trainer
+    imageTag: '{{ .GetValue "defaultImageTag" }}'
+    localhost: host.docker.internal

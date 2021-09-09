@@ -1,0 +1,11 @@
+inputs:
+
+  mlopsDataGeneratorRunInLocal:
+    default: yes
+    options:
+      - yes
+      - no
+    allowCustom: false
+    description: Whether to run mlopsDataGenerator in local computer
+    prompt: Run mlopsDataGenerator in local computer?
+

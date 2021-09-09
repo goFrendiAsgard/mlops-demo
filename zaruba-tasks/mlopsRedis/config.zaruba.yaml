@@ -1,0 +1,6 @@
+configs:
+  mlopsRedis:
+    useImagePrefix: false
+    imageName: redis
+    containerName: mlopsRedis
+    ports: 6379

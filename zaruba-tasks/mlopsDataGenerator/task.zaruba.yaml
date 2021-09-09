@@ -1,0 +1,57 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+  - ./taskContainer.zaruba.yaml
+
+tasks:
+
+  runMlopsDataGenerator:
+    icon: 🐍
+    extend: core.startService
+    location: ../../mlopsDataGenerator
+    dependencies:
+      - prepareMlopsDataGenerator
+    inputs:
+      - mlopsDataGeneratorRunInLocal
+    config:
+      start: |
+        {{ $ports := .Split (.Trim (.GetConfig "ports") "\n ") "\n" -}}
+        {{ $port := index $ports 0 -}}
+        pipenv run uvicorn main:app --reload --port={{ or $port "8080" }}
+    configRef: mlopsDataGenerator
+    envRef: mlopsDataGenerator
+
+  runMlopsDataGeneratorContainer:
+    extend: core.startDockerContainer
+    dependencies:
+      - buildMlopsDataGeneratorImage
+    location: ../../mlopsDataGenerator
+    inputs:
+      - mlopsDataGeneratorRunInLocal
+    configRefs:
+      - mlopsDataGeneratorContainer
+      - mlopsDataGenerator
+    envRef: mlopsDataGenerator
+
+  prepareMlopsDataGenerator:
+    icon: 🐍
+    extend: core.runShellScript
+    location: ../../mlopsDataGenerator
+    timeout: 1h
+    config:
+      start: pipenv install
+    configRef: mlopsDataGenerator
+    envRef: mlopsDataGenerator
+
+  testMlopsDataGenerator:
+    icon: 🐍
+    extend: core.runShellScript
+    location: ../../mlopsDataGenerator
+    dependencies:
+        - prepareMlopsDataGenerator
+    timeout: 1h
+    config:
+      start: pipenv run pytest -rP -v --cov="$(pwd)" --cov-report html
+    configRef: mlopsDataGenerator
+    envRef: mlopsDataGenerator

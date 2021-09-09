@@ -1,0 +1,57 @@
+tasks:
+
+  runMlopsAirflowWebServer:
+    icon: 😃
+    extend: core.startDockerContainer
+    dependencies:
+      - configureMlopsAirflow
+      - buildMlopsAirflowImage
+    timeout: 1h
+    inputs:
+      - mlopsAirflowRunInLocal
+    configRefs:
+      - mlopsAirflowWebServer
+      - mlopsAirflowContainer
+    envRef: mlopsAirflow
+
+  runMlopsAirflowScheduler:
+    icon: ⏰
+    extend: core.startDockerContainer
+    dependencies:
+      - configureMlopsAirflow
+      - buildMlopsAirflowImage
+    timeout: 1h
+    inputs:
+      - mlopsAirflowRunInLocal
+    configRefs:
+      - mlopsAirflowScheduler
+      - mlopsAirflowContainer
+    envRef: mlopsAirflow
+
+  runMlopsAirflowWorker:
+    icon: 👷
+    extend: core.startDockerContainer
+    dependencies:
+      - configureMlopsAirflow
+      - buildMlopsAirflowImage
+    timeout: 1h
+    inputs:
+      - mlopsAirflowRunInLocal
+    configRefs:
+      - mlopsAirflowWorker
+      - mlopsAirflowContainer
+    envRef: mlopsAirflow
+
+  runMlopsAirflowFlower:
+    icon: 🌻
+    extend: core.startDockerContainer
+    dependencies:
+      - configureMlopsAirflow
+      - buildMlopsAirflowImage
+    timeout: 1h
+    inputs:
+      - mlopsAirflowRunInLocal
+    configRefs:
+      - mlopsAirflowFlower
+      - mlopsAirflowContainer
+    envRef: mlopsAirflow

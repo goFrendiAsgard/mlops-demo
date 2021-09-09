@@ -1,0 +1,47 @@
+configs:
+
+  createMlopsAirflowDb:
+    dbName: '{{ .GetEnv "DB_NAME" }}'
+
+  mlopsAirflowContainer:
+    useImagePrefix: true
+    imagePrefix: '{{ .GetValue "defaultImagePrefix" }}'
+    imageName: mlops-airflow
+    imageTag: '{{ .GetValue "defaultImageTag" }}'
+    localhost: host.docker.internal
+    volumes: |
+      {{ .GetRelativePath "../../mlopsAirflow/dags" }}:/opt/airflow/dags
+      {{ .GetRelativePath "../../mlopsAirflow/logs" }}:/opt/airflow/logs
+      {{ .GetRelativePath "../../mlopsAirflow/plugins" }}:/opt/airflow/plugins
+    runInLocal: '{{ .GetValue "mlopsAirflowRunInLocal" }}'
+
+  mlopsAirflowConfigurator:
+    containerName: mlopsAirflowConfigurator
+    entryPoint: bash
+    command: /opt/airflow/configurator/init.sh 
+    volumes: |
+      {{ .GetRelativePath "../../mlopsAirflow/configurator" }}:/opt/airflow/configurator
+      {{ .GetRelativePath "../../mlopsAirflow/dags" }}:/opt/airflow/dags
+      {{ .GetRelativePath "../../mlopsAirflow/logs" }}:/opt/airflow/logs
+      {{ .GetRelativePath "../../mlopsAirflow/plugins" }}:/opt/airflow/plugins
+    user: root
+
+  mlopsAirflowWebServer:
+    containerName: mlopsAirflowWebServer
+    command: webserver
+    ports: |
+      8080:8080
+
+  mlopsAirflowScheduler:
+    containerName: mlopsAirflowScheduler
+    command: scheduler
+
+  mlopsAirflowWorker:
+    containerName: mlopsAirflowWorker
+    command: celery worker
+
+  mlopsAirflowFlower:
+    containerName: mlopsAirflowFlower
+    command: celery flower
+    ports: |
+      5555:5555

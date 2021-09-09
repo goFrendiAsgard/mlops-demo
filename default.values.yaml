@@ -1,0 +1,8 @@
+airflowServiceName: mlopsAirflow
+defaultBranch: master
+defaultImagePrefix: ""
+defaultImageTag: latest
+link::mlopsApi/helpers: shared-libs/python/helpers
+link::mlopsDataGenerator/helpers: shared-libs/python/helpers
+postgreServiceName: mlopsPostgre
+redisServiceName: mlopsRedis

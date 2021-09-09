@@ -1,0 +1,45 @@
+tasks:
+
+  buildMlopsModelTrainerImage:
+    extend: core.buildDockerImage
+    location: ../../mlopsModelTrainer
+    timeout: 1h
+    configRef: mlopsModelTrainerContainer
+
+  pushMlopsModelTrainerImage:
+    extend: core.pushDockerImage
+    location: ../../mlopsModelTrainer
+    timeout: 1h
+    configRef: mlopsModelTrainerContainer
+
+  stopMlopsModelTrainerContainer:
+    extend: core.stopDockerContainer
+    configRef: mlopsModelTrainerContainer
+
+  removeMlopsModelTrainerContainer:
+    extend: core.removeDockerContainer
+    configRef: mlopsModelTrainerContainer
+
+  helmInstallMlopsModelTrainer:
+    extend: core.helmInstall
+    location: ../..
+    dependencies:
+      - helmGenerateValueMlopsModelTrainer
+    timeout: 1h
+    configRef: mlopsModelTrainerHelm
+    envRef: mlopsModelTrainer
+
+  helmUninstallMlopsModelTrainer:
+    extend: core.helmUninstall
+    location: ../..
+    timeout: 1h
+    configRef: mlopsModelTrainerHelm
+
+  helmGenerateValueMlopsModelTrainer:
+    extend: core.helmGenerateValue
+    location: ../..
+    configRefs:
+      - mlopsModelTrainerHelm
+      - mlopsModelTrainerContainer
+      - mlopsModelTrainer
+    envRef: mlopsModelTrainer

@@ -1,0 +1,25 @@
+tasks:
+
+  stopMlopsAirflowWebServer:
+    extend: core.stopDockerContainer
+    configRefs:
+      - mlopsAirflowWebServer
+      - mlopsAirflowContainer
+
+  stopMlopsAirflowScheduler:
+    extend: core.stopDockerContainer
+    configRefs:
+      - mlopsAirflowScheduler
+      - mlopsAirflowContainer
+
+  stopMlopsAirflowWorker:
+    extend: core.stopDockerContainer
+    configRefs:
+      - mlopsAirflowWorker
+      - mlopsAirflowContainer
+
+  stopMlopsAirflowFlower:
+    extend: core.stopDockerContainer
+    configRefs:
+      - mlopsAirflowFlower
+      - mlopsAirflowContainer

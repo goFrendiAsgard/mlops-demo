@@ -1,0 +1,13 @@
+tasks:
+
+  buildMlopsAirflowImage:
+    extend: core.buildDockerImage
+    location: ../../mlopsAirflow
+    timeout: 1h
+    configRef: mlopsAirflowContainer
+
+  pushMlopsAirflowImage:
+    extend: core.pushDockerImage
+    location: ../../mlopsAirflow
+    timeout: 1h
+    configRef: mlopsAirflowContainer

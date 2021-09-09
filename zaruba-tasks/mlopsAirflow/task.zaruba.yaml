@@ -1,0 +1,34 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+  - ./taskContainer.zaruba.yaml
+  - ./taskInit.zaruba.yaml
+  - ./taskRemoveContainer.zaruba.yaml
+  - ./taskStartContainer.zaruba.yaml
+  - ./taskStopContainer.zaruba.yaml
+
+tasks:
+  
+  runMlopsAirflow:
+    dependencies:
+      - runMlopsAirflowWebServer
+      - runMlopsAirflowScheduler
+      - runMlopsAirflowWorker
+      - runMlopsAirflowFlower
+      - configureMlopsAirflowWorker
+
+  stopMlopsAirflowContainer:
+    dependencies:
+      - stopMlopsAirflowWebServer
+      - stopMlopsAirflowScheduler
+      - stopMlopsAirflowWorker
+      - stopMlopsAirflowFlower
+
+  removeMlopsAirflowContainer:
+    dependencies:
+      - removeMlopsAirflowConfigurator
+      - removeMlopsAirflowWebServer
+      - removeMlopsAirflowScheduler
+      - removeMlopsAirflowWorker
+      - removeMlopsAirflowFlower

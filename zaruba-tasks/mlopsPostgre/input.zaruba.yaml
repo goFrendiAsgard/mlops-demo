@@ -1,0 +1,15 @@
+inputs:
+
+  mlopsPostgreRunInLocal:
+    default: yes
+    options:
+      - yes
+      - no
+    allowCustom: false
+    description: Whether to run mlopsPostgre in local computer
+    prompt: Run mlopsPostgre in local computer?
+
+  mlopsPostgre.sql:
+    validation: ^.+$
+    prompt: single line SQL to be executed (Required)
+    description: single line SQL to be executed

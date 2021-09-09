@@ -1,0 +1,45 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+
+tasks:
+
+  runMlopsPostgre:
+    icon: 🐬 
+    extend: core.postgre.startDockerContainer
+    dependencies:
+      - pullMlopsPostgreImage
+    timeout: 1h
+    inputs:
+      - mlopsPostgreRunInLocal
+    config:
+      afterCheck: sleep 3
+      runInLocal: '{{ .GetValue "mlopsPostgreRunInLocal" }}'
+    configRef: mlopsPostgre
+    envRef: mlopsPostgre
+
+  mlopsPostgreExecSql:
+    icon: 🐬 
+    extend: core.postgre.execSql
+    dependencies:
+      - runMlopsPostgre
+    inputs:
+      - mlopsPostgre.sql
+    config:
+      queries: '{{ .GetValue "mlopsPostgre.sql" }}'
+    configRef: mlopsPostgre
+    envRef: mlopsPostgre
+
+  pullMlopsPostgreImage:
+    extend: core.pullDockerImage
+    timeout: 1h
+    configRef: mlopsPostgre
+
+  stopMlopsPostgreContainer:
+    extend: core.stopDockerContainer
+    configRef: mlopsPostgre
+
+  removeMlopsPostgreContainer:
+    extend: core.removeDockerContainer
+    configRef: mlopsPostgre

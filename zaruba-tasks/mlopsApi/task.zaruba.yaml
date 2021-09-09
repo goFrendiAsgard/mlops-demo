@@ -1,0 +1,57 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+  - ./taskContainer.zaruba.yaml
+
+tasks:
+
+  runMlopsApi:
+    icon: 🐍
+    extend: core.startService
+    location: ../../mlopsApi
+    dependencies:
+      - prepareMlopsApi
+    inputs:
+      - mlopsApiRunInLocal
+    config:
+      start: |
+        {{ $ports := .Split (.Trim (.GetConfig "ports") "\n ") "\n" -}}
+        {{ $port := index $ports 0 -}}
+        pipenv run uvicorn main:app --reload --port={{ or $port "8080" }}
+    configRef: mlopsApi
+    envRef: mlopsApi
+
+  runMlopsApiContainer:
+    extend: core.startDockerContainer
+    dependencies:
+      - buildMlopsApiImage
+    location: ../../mlopsApi
+    inputs:
+      - mlopsApiRunInLocal
+    configRefs:
+      - mlopsApiContainer
+      - mlopsApi
+    envRef: mlopsApi
+
+  prepareMlopsApi:
+    icon: 🐍
+    extend: core.runShellScript
+    location: ../../mlopsApi
+    timeout: 1h
+    config:
+      start: pipenv install
+    configRef: mlopsApi
+    envRef: mlopsApi
+
+  testMlopsApi:
+    icon: 🐍
+    extend: core.runShellScript
+    location: ../../mlopsApi
+    dependencies:
+        - prepareMlopsApi
+    timeout: 1h
+    config:
+      start: pipenv run pytest -rP -v --cov="$(pwd)" --cov-report html
+    configRef: mlopsApi
+    envRef: mlopsApi

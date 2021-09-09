@@ -1,0 +1,45 @@
+tasks:
+
+  buildMlopsDataGeneratorImage:
+    extend: core.buildDockerImage
+    location: ../../mlopsDataGenerator
+    timeout: 1h
+    configRef: mlopsDataGeneratorContainer
+
+  pushMlopsDataGeneratorImage:
+    extend: core.pushDockerImage
+    location: ../../mlopsDataGenerator
+    timeout: 1h
+    configRef: mlopsDataGeneratorContainer
+
+  stopMlopsDataGeneratorContainer:
+    extend: core.stopDockerContainer
+    configRef: mlopsDataGeneratorContainer
+
+  removeMlopsDataGeneratorContainer:
+    extend: core.removeDockerContainer
+    configRef: mlopsDataGeneratorContainer
+
+  helmInstallMlopsDataGenerator:
+    extend: core.helmInstall
+    location: ../..
+    dependencies:
+      - helmGenerateValueMlopsDataGenerator
+    timeout: 1h
+    configRef: mlopsDataGeneratorHelm
+    envRef: mlopsDataGenerator
+
+  helmUninstallMlopsDataGenerator:
+    extend: core.helmUninstall
+    location: ../..
+    timeout: 1h
+    configRef: mlopsDataGeneratorHelm
+
+  helmGenerateValueMlopsDataGenerator:
+    extend: core.helmGenerateValue
+    location: ../..
+    configRefs:
+      - mlopsDataGeneratorHelm
+      - mlopsDataGeneratorContainer
+      - mlopsDataGenerator
+    envRef: mlopsDataGenerator

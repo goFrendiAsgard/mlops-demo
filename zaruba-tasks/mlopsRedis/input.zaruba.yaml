@@ -1,0 +1,11 @@
+inputs:
+
+  mlopsRedisRunInLocal:
+    default: yes
+    options:
+      - yes
+      - no
+    allowCustom: false
+    description: Whether to run mlopsRedis in local computer
+    prompt: Run mlopsRedis in local computer?
+

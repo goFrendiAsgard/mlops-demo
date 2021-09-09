@@ -1,0 +1,52 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+  - ./taskContainer.zaruba.yaml
+
+tasks:
+
+  runMlopsModelTrainer:
+    icon: 🐍
+    extend: core.startService
+    location: ../../mlopsModelTrainer
+    dependencies:
+        - prepareMlopsModelTrainer
+    inputs:
+      - mlopsModelTrainerRunInLocal
+    config:
+      start: pipenv run python main.py
+    configRef: mlopsModelTrainer
+    envRef: mlopsModelTrainer
+
+  runMlopsModelTrainerContainer:
+    extend: core.startDockerContainer
+    dependencies:
+      - buildMlopsModelTrainerImage
+    location: ../../mlopsModelTrainer
+    inputs:
+      - mlopsModelTrainerRunInLocal
+    configRefs:
+      - mlopsModelTrainerContainer
+      - mlopsModelTrainer
+    envRef: mlopsModelTrainer
+
+  testMlopsModelTrainer:
+    icon: 🐍
+    extend: core.runShellScript
+    location: ../../mlopsModelTrainer
+    dependencies:
+        - prepareMlopsModelTrainer
+    timeout: 1h
+    config:
+      start: pipenv run pytest -rP -v --cov="$(pwd)" --cov-report html
+    configRef: mlopsModelTrainer
+    envRef: mlopsModelTrainer
+
+  prepareMlopsModelTrainer:
+    icon: 🐍
+    extend: core.preparePythonApp
+    location: ../../mlopsModelTrainer
+    timeout: 1h
+    configRef: mlopsModelTrainer
+    envRef: mlopsModelTrainer

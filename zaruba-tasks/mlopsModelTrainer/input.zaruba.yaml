@@ -1,0 +1,11 @@
+inputs:
+
+  mlopsModelTrainerRunInLocal:
+    default: yes
+    options:
+      - yes
+      - no
+    allowCustom: false
+    description: Whether to run mlopsModelTrainer in local computer
+    prompt: Run mlopsModelTrainer in local computer?
+

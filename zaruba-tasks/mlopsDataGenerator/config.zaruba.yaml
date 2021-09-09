@@ -1,0 +1,18 @@
+configs:
+
+  mlopsDataGenerator:
+    ports: |
+      '{{ or (.GetEnv "MLOPS_DATA_GENERATOR_HTTP_PORT") (.GetEnv "HTTP_PORT") "3000" }}'
+ 
+  mlopsDataGeneratorHelm:
+    releaseName: mlops-data-generator
+    chart: helm/charts/app
+    valueFile: helm/values/mlopsDataGenerator.yaml
+    valueTemplateFile: helm/value-templates/app.yaml 
+
+  mlopsDataGeneratorContainer:
+    containerName: mlopsDataGenerator
+    imagePrefix: '{{ .GetValue "defaultImagePrefix" }}'
+    imageName: mlops-data-generator
+    imageTag: '{{ .GetValue "defaultImageTag" }}'
+    localhost: host.docker.internal

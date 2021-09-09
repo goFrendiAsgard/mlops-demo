@@ -1,0 +1,6 @@
+configs:
+  mlopsPostgre:
+    useImagePrefix: false
+    imageName: postgres
+    containerName: mlopsPostgre
+    ports: 5432

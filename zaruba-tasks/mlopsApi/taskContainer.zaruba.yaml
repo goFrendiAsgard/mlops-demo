@@ -1,0 +1,45 @@
+tasks:
+
+  buildMlopsApiImage:
+    extend: core.buildDockerImage
+    location: ../../mlopsApi
+    timeout: 1h
+    configRef: mlopsApiContainer
+
+  pushMlopsApiImage:
+    extend: core.pushDockerImage
+    location: ../../mlopsApi
+    timeout: 1h
+    configRef: mlopsApiContainer
+
+  stopMlopsApiContainer:
+    extend: core.stopDockerContainer
+    configRef: mlopsApiContainer
+
+  removeMlopsApiContainer:
+    extend: core.removeDockerContainer
+    configRef: mlopsApiContainer
+
+  helmInstallMlopsApi:
+    extend: core.helmInstall
+    location: ../..
+    dependencies:
+      - helmGenerateValueMlopsApi
+    timeout: 1h
+    configRef: mlopsApiHelm
+    envRef: mlopsApi
+
+  helmUninstallMlopsApi:
+    extend: core.helmUninstall
+    location: ../..
+    timeout: 1h
+    configRef: mlopsApiHelm
+
+  helmGenerateValueMlopsApi:
+    extend: core.helmGenerateValue
+    location: ../..
+    configRefs:
+      - mlopsApiHelm
+      - mlopsApiContainer
+      - mlopsApi
+    envRef: mlopsApi

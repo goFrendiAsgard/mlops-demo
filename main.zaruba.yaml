@@ -1,0 +1,91 @@
+includes:
+  - ./zaruba-tasks/mlopsPostgre/task.zaruba.yaml
+  - ./zaruba-tasks/mlopsRedis/task.zaruba.yaml
+  - ./zaruba-tasks/mlopsAirflow/task.zaruba.yaml
+  - ./zaruba-tasks/mlopsApi/task.zaruba.yaml
+  - ./zaruba-tasks/mlopsDataGenerator/task.zaruba.yaml
+  - ./zaruba-tasks/mlopsModelTrainer/task.zaruba.yaml
+
+tasks:
+
+  run:
+    icon: 👟
+    extend: core.wrapper
+    dependencies:
+      - runMlopsPostgre
+      - runMlopsRedis
+      - runMlopsAirflow
+      - runMlopsApi
+      - runMlopsDataGenerator
+
+  runContainer:
+    icon: 🐳
+    extend: core.wrapper
+    dependencies:
+      - runMlopsPostgre
+      - runMlopsRedis
+      - runMlopsAirflow
+      - runMlopsApiContainer
+      - runMlopsDataGeneratorContainer
+
+  stopContainer:
+    icon: ✋
+    extend: core.wrapper
+    dependencies:
+      - stopMlopsPostgreContainer
+      - stopMlopsRedisContainer
+      - stopMlopsAirflowContainer
+      - stopMlopsApiContainer
+      - stopMlopsDataGeneratorContainer
+
+  removeContainer:
+    icon: 🔥
+    extend: core.wrapper
+    dependencies:
+      - removeMlopsPostgreContainer
+      - removeMlopsRedisContainer
+      - removeMlopsAirflowContainer
+      - removeMlopsApiContainer
+      - removeMlopsDataGeneratorContainer
+
+  pullImage:
+    icon: 📥
+    extend: core.wrapper
+    dependencies:
+      - pullMlopsPostgreImage
+      - pullMlopsRedisImage
+
+  pushImage:
+    icon: 📤
+    extend: core.wrapper
+    dependencies:
+      - pushMlopsAirflowImage
+      - pushMlopsApiImage
+      - pushMlopsDataGeneratorImage
+      - pushMlopsModelTrainerImage
+
+  buildImage:
+    icon: 🏭
+    extend: core.wrapper
+    dependencies:
+      - buildMlopsAirflowImage
+      - buildMlopsApiImage
+      - buildMlopsDataGeneratorImage
+      - buildMlopsModelTrainerImage
+
+  helmInstall:
+    icon: 🏭
+    extend: core.wrapper
+    dependencies:
+      - helmInstallMlopsApi
+      - helmInstallMlopsDataGenerator
+      - helmInstallMlopsModelTrainer
+
+  helmUninstall:
+    icon: 🔥
+    extend: core.wrapper
+    dependencies:
+      - helmUninstallMlopsApi
+      - helmUninstallMlopsDataGenerator
+      - helmUninstallMlopsModelTrainer
+

@@ -1,0 +1,31 @@
+tasks:
+
+  removeMlopsAirflowConfigurator:
+    extend: core.removeDockerContainer
+    configRefs:
+      - mlopsAirflowConfigurator
+      - mlopsAirflowContainer
+
+  removeMlopsAirflowWebServer:
+    extend: core.removeDockerContainer
+    configRefs:
+      - mlopsAirflowWebServer
+      - mlopsAirflowContainer
+
+  removeMlopsAirflowScheduler:
+    extend: core.removeDockerContainer
+    configRefs:
+      - mlopsAirflowScheduler
+      - mlopsAirflowContainer
+
+  removeMlopsAirflowWorker:
+    extend: core.removeDockerContainer
+    configRefs:
+      - mlopsAirflowWorker
+      - mlopsAirflowContainer
+
+  removeMlopsAirflowFlower:
+    extend: core.removeDockerContainer
+    configRefs:
+      - mlopsAirflowFlower
+      - mlopsAirflowContainer

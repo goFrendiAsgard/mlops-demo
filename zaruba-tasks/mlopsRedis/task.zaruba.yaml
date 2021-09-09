@@ -1,0 +1,41 @@
+includes:
+  - ./config.zaruba.yaml
+  - ./env.zaruba.yaml
+  - ./input.zaruba.yaml
+
+tasks:
+
+  runMlopsRedis:
+    icon: 🧰
+    extend: core.startDockerContainer
+    dependencies:
+      - pullMlopsRedisImage
+    timeout: 1h
+    inputs:
+      - mlopsRedisRunInLocal
+    config:
+      runInLocal: '{{ .GetValue "mlopsRedisRunInLocal" }}'
+    configRef: mlopsRedis
+    envRef: mlopsRedis
+ 
+  flushMlopsRedis:
+    icon: 🧰
+    extend: core.runInDockerContainer
+    dependencies:
+      - runMlopsRedis
+    configRef: mlopsRedis
+    config:
+      commands: redis-cli flushall
+
+  pullMlopsRedisImage:
+    extend: core.pullDockerImage
+    timeout: 1h
+    configRef: mlopsRedis
+
+  stopMlopsRedisContainer:
+    extend: core.stopDockerContainer
+    configRef: mlopsRedis
+
+  removeMlopsRedisContainer:
+    extend: core.removeDockerContainer
+    configRef: mlopsRedis

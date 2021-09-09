@@ -1,0 +1,56 @@
+tasks:
+
+  createMlopsAirflowDb:
+    extend: mlopsPostgreExecSql
+    dependencies:
+      - runMlopsPostgre
+    config:
+      queries: 'CREATE DATABASE {{ .GetConfig "dbName" }}'
+    configRef: createMlopsAirflowDb
+    envRef: createMlopsAirflowDb
+
+  createMlopsAirflowConfiguratorScript:
+    extend: core.runShellScript
+    location: ../../mlopsAirflow
+    config:
+      start: |
+        {{ $err := .WriteFile (.GetRelativePath "../../mlopsAirflow/configurator/init.sh") (.ParseFile (.GetRelativePath "../../mlopsAirflow/configurator/init.gotmpl.sh")) }}
+    configRefs:
+      - mlopsAirflowConfigurator
+      - mlopsAirflowContainer
+    envRefs:
+      - mlopsAirflowConfigurator
+      - mlopsAirflow
+
+  configureMlopsAirflow:
+    extend: core.runDockerContainer
+    location: ../../mlopsAirflow
+    dependencies:
+      - runMlopsRedis
+      - runMlopsPostgre
+      - createMlopsAirflowDb
+      - createMlopsAirflowConfiguratorScript
+      - buildMlopsAirflowImage
+    timeout: 1h
+    inputs:
+      - mlopsAirflowRunInLocal
+    configRefs:
+      - mlopsAirflowConfigurator
+      - mlopsAirflowContainer
+    envRefs:
+      - mlopsAirflowConfigurator
+      - mlopsAirflow
+
+  configureMlopsAirflowWorker:
+    extend: core.runInDockerContainer
+    location: ../../mlopsAirflow
+    dependencies:
+      - runMlopsAirflowWorker
+    config:
+      containerShell: bash
+      commands: |
+        {{ .ParseFile "worker/init.gotmpl.sh"}}
+    configRef: mlopsAirflowWorker
+    envRef: mlopsAirflowWorker
+  
+

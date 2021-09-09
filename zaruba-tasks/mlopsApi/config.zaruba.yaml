@@ -1,0 +1,18 @@
+configs:
+
+  mlopsApi:
+    ports: |
+      '{{ or (.GetEnv "MLOPS_API_HTTP_PORT") (.GetEnv "HTTP_PORT") "3000" }}'
+ 
+  mlopsApiHelm:
+    releaseName: mlops-api
+    chart: helm/charts/app
+    valueFile: helm/values/mlopsApi.yaml
+    valueTemplateFile: helm/value-templates/app.yaml 
+
+  mlopsApiContainer:
+    containerName: mlopsApi
+    imagePrefix: '{{ .GetValue "defaultImagePrefix" }}'
+    imageName: mlops-api
+    imageTag: '{{ .GetValue "defaultImageTag" }}'
+    localhost: host.docker.internal
