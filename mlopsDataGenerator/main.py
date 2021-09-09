@@ -1,3 +1,5 @@
+from data.controller import route_controller as data_route_controller
+from data.controller import event_controller as data_event_controller
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine
@@ -37,3 +39,9 @@ def on_shutdown():
  
 if static_dir != '':
     app.mount(static_url, StaticFiles(directory=static_dir), name='static')
+
+if enable_route:
+    data_route_controller(app, mb)
+
+if enable_event:
+    data_event_controller(mb)
