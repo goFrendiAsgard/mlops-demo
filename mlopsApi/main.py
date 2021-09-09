@@ -27,10 +27,11 @@ mb_type = os.getenv('MLOPS_API_MESSAGE_BUS_TYPE', 'local')
 enable_route = os.getenv('MLOPS_API_ENABLE_ROUTE_HANDLER', '1') != '0'
 enable_event = os.getenv('MLOPS_API_ENABLE_EVENT_HANDLER', '1') != '0'
 static_url = os.getenv('MLOPS_API_STATIC_URL', '/static')
+storage_path = os.path.abspath(os.getenv('MLOPS_API_STORAGE', './storage'))
 static_dir = get_static_dir()
 
 engine = create_engine(db_url, echo=True)
-app = FastAPI()
+app = FastAPI(title='API')
 mb = create_message_bus(mb_type)
 
 @app.on_event('shutdown')
@@ -41,7 +42,7 @@ if static_dir != '':
     app.mount(static_url, StaticFiles(directory=static_dir), name='static')
 
 if enable_route:
-    ml_route_controller(app, mb)
+    ml_route_controller(app, mb, storage_path)
 
 if enable_event:
     ml_event_controller(mb)

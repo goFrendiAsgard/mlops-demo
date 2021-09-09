@@ -1,12 +1,9 @@
 from typing import Mapping, Optional, List, Any
 from fastapi import FastAPI, HTTPException
 from helpers.transport import MessageBus
-from pydantic import BaseModel
 from data.model import GeneratorParam, GeneratorResponse, Generator
 
 import traceback
-
-
 
 def route_controller(app: FastAPI, mb: MessageBus, storage_path: str):
 
