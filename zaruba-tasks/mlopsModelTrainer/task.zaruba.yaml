@@ -8,7 +8,7 @@ tasks:
 
   runMlopsModelTrainer:
     icon: 🐍
-    extend: core.startService
+    extend: core.runShellScript
     location: ../../mlopsModelTrainer
     dependencies:
         - prepareMlopsModelTrainer
@@ -20,7 +20,7 @@ tasks:
     envRef: mlopsModelTrainer
 
   runMlopsModelTrainerContainer:
-    extend: core.startDockerContainer
+    extend: core.runDockerContainer
     dependencies:
       - buildMlopsModelTrainerImage
     location: ../../mlopsModelTrainer
