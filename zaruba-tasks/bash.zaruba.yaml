@@ -1,24 +1,39 @@
+inputs:
+
+  dataLabel:
+    description: Data labels to be added
+    prompt: Data label (JSON)
+    options:
+      - '["0", "1"]'
+      - '["2", "3"]'
+      - '["4", "5"]'
+      - '["6", "7"]'
+      - '["8", "9"]'
+      - '["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]'
+
 tasks:
+
+  addData:
+    extend: core.runShellScript
+    inputs:
+      - dataLabel
+    config:
+      dataLabel: '{{ .GetValue "dataLabel" }}'
+      start: |
+        curl -X 'POST' \
+          'http://localhost:3000/generate' \
+          -H 'accept: application/json' \
+          -H 'Content-Type: application/json' \
+          -d '{
+          "datetime": "",
+          "count_per_label": 100,
+          "labels": {{ .GetConfig "dataLabel" }}
+        }'
 
   runMlopsScript:
     private: true
     extend: core.runShellScript
     location: ../bash
-
-  addData1:
-    extend: runMlopsScript
-    config:
-      start: ./addData1.sh
-
-  addData2:
-    extend: runMlopsScript
-    config:
-      start: ./addData2.sh
-
-  addData3:
-    extend: runMlopsScript
-    config:
-      start: ./addData3.sh
 
   predict0:
     extend: runMlopsScript

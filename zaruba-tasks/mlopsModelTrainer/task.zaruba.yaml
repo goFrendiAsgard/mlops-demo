@@ -15,7 +15,9 @@ tasks:
     inputs:
       - mlopsModelTrainerRunInLocal
     config:
-      start: pipenv run python main.py
+      start: |
+        pipenv run python main.py
+        chmod 777 -R "{{ .GetEnv "MLOPS_MODEL_TRAINER_STORAGE" }}/*.*"
     configRef: mlopsModelTrainer
     envRef: mlopsModelTrainer
 
