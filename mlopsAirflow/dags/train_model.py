@@ -19,6 +19,8 @@ default_args = {
 docker_url = Variable.get(key='modelTrainerDockerUrl')
 docker_operator_image = Variable.get(key='modelTrainerImage')
 docker_operator_environment = Variable.get(key='modelTrainerEnv', deserialize_json=True)
+docker_operator_min_date = Variable.get(key='modelTrainerMinDate')
+docker_operator_host_storage = Variable.get(key='modelTrainerHostStorage')
 
 with DAG('modelTrainer_docker_dag', default_args=default_args, schedule_interval='5 * * * *', catchup=False) as dag:
 
@@ -27,6 +29,7 @@ with DAG('modelTrainer_docker_dag', default_args=default_args, schedule_interval
         bash_command='date'
     )
 
+
     # see: https://airflow.apache.org/docs/apache-airflow-providers-docker/stable/_api/airflow/providers/docker/operators/docker/index.html#module-airflow.providers.docker.operators.docker
     t2 = DockerOperator(
         task_id='modelTrainer_docker_command',
@@ -34,15 +37,13 @@ with DAG('modelTrainer_docker_dag', default_args=default_args, schedule_interval
         api_version='auto',
         auto_remove=True,
         environment={ 
-            "MLOPS_MODEL_TRAINER_MIN_DATE": "2021-09-09 09:09:09",
-            "MLOPS_MODEL_TRAINER_MAX_DATE": "{{ execution_date..to_datetime_string() }}",
+            'MLOPS_MODEL_TRAINER_MIN_DATE': docker_operator_min_date,
+            'MLOPS_MODEL_TRAINER_MAX_DATE': '{{ execution_date.to_datetime_string() }}',
             **docker_operator_environment,
         },
         docker_url=docker_url,
-        mounts=Mount(
-            target="/storage",
-            source="/storage",
-        )
+        mount_tmp_dir=False,
+        mounts=[Mount(target='/storage', source=docker_operator_host_storage, type='bind')]
     )
 
     t3 = BashOperator(

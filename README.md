@@ -25,7 +25,7 @@ Simple ML Ops using Airflow and Scikit learn
         - http (flower): `5555`
     - Mount volumes:
         - /opt/airflow/dags: `mlopsAirflow/dags`
-        - /storage: `mlopsStorage`
+        - /opt/airflow/storage: `mlopsStorage`
 # Why ML Ops
 
 Your data is evolving. Old data become obsolete, new data emerged.
