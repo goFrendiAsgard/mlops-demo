@@ -35,7 +35,7 @@ Thus, your ML Model should evolve as well.
 ```sh
 # generate data with labels 0 and 1
 zaruba please runMlopsDataGenerator # run on new panel
-zaruba please addData1.sh # new panel
+zaruba please addData dataLabel='["0", "1"]'
 
 # train, manually
 zaruba please runMlopsModelTrainer
@@ -44,20 +44,18 @@ zaruba please runMlopsModelTrainer
 zaruba please runMlopsApi # run on new panel
 
 # predict data with label 0, 1, and 2
-zaruba please predict0
-zaruba please predict1
-zaruba please predict2 # this one should fail because we don't have the data yet
+zaruba please predictData predictionTest='0-1' # should be okay
+zaruba please predictData predictionTest='0-9' # should be failed, since the model only knows '0' and '1'
 
 # run Airflow
 zaruba please runMlopsAirflow
 
 # add data
-zaruba please addData2.sh
+zaruba please addData dataLabel='["2", "3"]'
 
 # wait until minutes 0, 5, 10, 15, 25, 30 ... or 55
 
 # predict again
-zaruba please predict0
-zaruba please predict1
-zaruba please predict2 # now it should works
+zaruba please predictData predictionTest='0-1' # should be okay
+zaruba please predictData predictionTest='0-9' # 2 and 3 should works (at least perform better)
 ```

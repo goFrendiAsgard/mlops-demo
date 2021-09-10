@@ -24,6 +24,9 @@ inputs:
 
 tasks:
 
+  train:
+    extend: runMlopsModelTrainer
+
   addData:
     extend: core.runShellScript
     inputs:
