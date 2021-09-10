@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
-from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.operators.python_operator import PythonOperator
+from modelTrainer.main import train
 from airflow.models import Variable
-from docker.types import Mount
 
 default_args = {
     'owner'                 : 'airflow',
-    'description'           : 'modelTrainer DockerOperator',
+    'description'           : 'modelTrainer',
     'depend_on_past'        : False,
     'start_date'            : datetime(2018, 1, 3),
     'email_on_failure'      : False,
@@ -16,39 +16,23 @@ default_args = {
     'retry_delay'           : timedelta(minutes=5)
 }
 
-docker_url = Variable.get(key='modelTrainerDockerUrl')
-docker_operator_image = Variable.get(key='modelTrainerImage')
-docker_operator_environment = Variable.get(key='modelTrainerEnv', deserialize_json=True)
-docker_operator_min_date = Variable.get(key='modelTrainerMinDate')
-docker_operator_host_storage = Variable.get(key='modelTrainerHostStorage')
+storage_path = Variable.get(key='modelTrainerStoragePath')
+min_date_time = Variable.get(key='modelTrainerMinDateTime')
 
-with DAG('modelTrainer_docker_dag', default_args=default_args, schedule_interval='5 * * * *', catchup=False) as dag:
+with DAG('modelTrainer_dag', default_args=default_args, schedule_interval='*/5 * * * *', catchup=False) as dag:
 
     t1 = BashOperator(
-        task_id='print_current_date',
-        bash_command='date'
+        task_id='print_hello',
+        bash_command='echo "Hello"'
     )
 
+    def train_task(ds, **kwargs):
+        train(storage_path, min_date_time, '{{ execution_date.to_datetime_string() }}')
 
-    # see: https://airflow.apache.org/docs/apache-airflow-providers-docker/stable/_api/airflow/providers/docker/operators/docker/index.html#module-airflow.providers.docker.operators.docker
-    t2 = DockerOperator(
+    t2 = PythonOperator(
         task_id='modelTrainer_docker_command',
-        image=docker_operator_image,
-        api_version='auto',
-        auto_remove=True,
-        environment={ 
-            'MLOPS_MODEL_TRAINER_MIN_DATE': docker_operator_min_date,
-            'MLOPS_MODEL_TRAINER_MAX_DATE': '{{ execution_date.to_datetime_string() }}',
-            **docker_operator_environment,
-        },
-        docker_url=docker_url,
-        mount_tmp_dir=False,
-        mounts=[Mount(target='/storage', source=docker_operator_host_storage, type='bind')]
+        python_callable=train_task
     )
 
-    t3 = BashOperator(
-        task_id='print_done',
-        bash_command='echo "Done"'
-    )
 
-    t1 >> t2 >> t3
+    t1 >> t2

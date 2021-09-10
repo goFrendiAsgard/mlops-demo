@@ -1,0 +1,36 @@
+tasks:
+
+  runMlopsScript:
+    private: true
+    extend: core.runShellScript
+    location: ../bash
+
+  addData1:
+    extend: runMlopsScript
+    config:
+      start: ./addData1.sh
+
+  addData2:
+    extend: runMlopsScript
+    config:
+      start: ./addData2.sh
+
+  addData3:
+    extend: runMlopsScript
+    config:
+      start: ./addData3.sh
+
+  predict0:
+    extend: runMlopsScript
+    config:
+      start: ./predict0.sh
+
+  predict1:
+    extend: runMlopsScript
+    config:
+      start: ./predict0.sh
+
+  predict2:
+    extend: runMlopsScript
+    config:
+      start: ./predict0.sh

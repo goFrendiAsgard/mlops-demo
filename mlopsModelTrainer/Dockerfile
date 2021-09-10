@@ -14,4 +14,4 @@ RUN pipenv install --system --deploy
 # Bundle app source
 COPY . .
 
-CMD pipenv run main.py
+CMD pipenv run python main.py

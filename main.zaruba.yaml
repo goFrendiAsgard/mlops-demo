@@ -5,6 +5,7 @@ includes:
   - ./zaruba-tasks/mlopsApi/task.zaruba.yaml
   - ./zaruba-tasks/mlopsDataGenerator/task.zaruba.yaml
   - ./zaruba-tasks/mlopsModelTrainer/task.zaruba.yaml
+  - ./zaruba-tasks/bash.zaruba.yaml
 
 tasks:
 

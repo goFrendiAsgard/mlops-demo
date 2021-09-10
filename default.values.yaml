@@ -4,5 +4,6 @@ defaultImagePrefix: ""
 defaultImageTag: latest
 link::mlopsApi/helpers: shared-libs/python/helpers
 link::mlopsDataGenerator/helpers: shared-libs/python/helpers
+link::mlopsAirflow/dags/modelTrainer: mlopsModelTrainer
 postgreServiceName: mlopsPostgre
 redisServiceName: mlopsRedis

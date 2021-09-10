@@ -1,13 +1,14 @@
 import pandas as pd
 import os
+import datetime
 from sklearn.datasets import fetch_openml
 from typing import Mapping, Optional, List, Tuple, Any
 from pydantic import BaseModel
 
 class GeneratorParam(BaseModel):
-    datetime: Optional[str] = '2021-09-09 09:09:09'
+    datetime: Optional[str] = ''
     count_per_label: Optional[int] = 50
-    labels: Optional[List[str]] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    labels: Optional[List[str]] = ['0', '1']
 
 class GeneratorResponse(BaseModel):
     datetime: str
@@ -30,7 +31,7 @@ class Generator():
     
 
     def generate(self, param = GeneratorParam) -> GeneratorResponse:
-        datetime_str = param.datetime
+        datetime_str = param.datetime if param.datetime != '' else datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         labels = param.labels
         count_per_label = param.count_per_label
         additional_df_list = [

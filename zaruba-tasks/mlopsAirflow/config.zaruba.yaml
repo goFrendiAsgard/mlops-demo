@@ -40,8 +40,6 @@ configs:
   mlopsAirflowWorker:
     containerName: mlopsAirflowWorker
     command: celery worker
-    modelTrainerDockerUrl: '{{ .GetEnv "MODEL_TRAINER_DOCKER_URL" }}'
-    modelTrainerImage: '{{ .GetEnv "MODEL_TRAINER_IMAGE" }}'
 
   mlopsAirflowFlower:
     containerName: mlopsAirflowFlower

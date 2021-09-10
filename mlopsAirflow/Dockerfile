@@ -14,3 +14,5 @@ USER airflow
 
 # Because of this: https://stackoverflow.com/a/68646041
 RUN pip install --no-cache-dir apache-airflow-providers-docker==2.1.1
+
+RUN pip install --no-cache-dir scikit-learn numpy pandas
