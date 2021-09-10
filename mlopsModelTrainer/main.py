@@ -17,12 +17,11 @@ def train(storage_path: str, min_datetime: str, max_datetime: str):
   csv_path = os.path.join(storage_path, 'data.csv')
   raw_df = pd.read_csv(csv_path)
 
-  print(min_datetime, max_datetime, raw_df)
   df = raw_df[(raw_df['datetime'] <= max_datetime) & (raw_df['datetime'] >= min_datetime)]
 
   data_count = df.shape[0]
-  train_data_count = int(0.9 * data_count)
-  test_data_count = int(0.1 * data_count)
+  train_data_count = int(0.7 * data_count)
+  test_data_count = int(0.3 * data_count)
 
   X = df.loc[:, 'pixel1':'pixel784'].to_numpy()
   y = df.loc[:, ['class']].to_numpy().ravel()
@@ -79,9 +78,10 @@ def train(storage_path: str, min_datetime: str, max_datetime: str):
     old_clf = pickle.load(model_file)
 
   # update config if necessary
-  old_score = clf.score(X_test, y_test)
+  old_score = old_clf.score(X_test, y_test)
   if score >= old_score:
     config['model'] = model_file_name
+    config['score'] = score
     config['last_updated'] = datetime.datetime.now().strftime(date_format)
     with open(config_path, 'w') as config_file:
       json.dump(config, config_file)

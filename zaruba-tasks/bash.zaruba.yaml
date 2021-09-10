@@ -28,9 +28,9 @@ tasks:
   predict1:
     extend: runMlopsScript
     config:
-      start: ./predict0.sh
+      start: ./predict1.sh
 
   predict2:
     extend: runMlopsScript
     config:
-      start: ./predict0.sh
+      start: ./predict2.sh
