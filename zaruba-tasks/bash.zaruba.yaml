@@ -2,7 +2,8 @@ inputs:
 
   dataLabel:
     description: Data labels to be added
-    prompt: Data label (JSON)
+    prompt: Data label to be added (JSON)
+    default: '["0", "1"]'
     options:
       - '["0", "1"]'
       - '["2", "3"]'
@@ -10,6 +11,16 @@ inputs:
       - '["6", "7"]'
       - '["8", "9"]'
       - '["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]'
+    allowCustom: false
+  
+  predictionTest:
+    description: Prediction test
+    prompt: Prediction test
+    default: '0-1'
+    options:
+      - '0-1'
+      - '0-9'
+    allowCustom: false
 
 tasks:
 
@@ -20,6 +31,7 @@ tasks:
     config:
       dataLabel: '{{ .GetValue "dataLabel" }}'
       start: |
+        {{ $d := .Decoration -}}
         curl -X 'POST' \
           'http://localhost:3000/generate' \
           -H 'accept: application/json' \
@@ -29,23 +41,22 @@ tasks:
           "count_per_label": 100,
           "labels": {{ .GetConfig "dataLabel" }}
         }'
-
-  runMlopsScript:
-    private: true
+        echo "{{ $d.Yellow }}New data added: {{ .GetConfig "dataLabel" }}{{$d.Normal }}"
+        echo "{{ $d.Yellow }}Train by invoking: zaruba please runMlopsModelTrainer{{$d.Normal }}"
+  
+  predictData:
     extend: core.runShellScript
-    location: ../bash
-
-  predict0:
-    extend: runMlopsScript
+    inputs:
+      - predictionTest
     config:
-      start: ./predict0.sh
-
-  predict1:
-    extend: runMlopsScript
-    config:
-      start: ./predict1.sh
-
-  predict2:
-    extend: runMlopsScript
-    config:
-      start: ./predict2.sh
+      predictionTest: '{{ .GetValue "predictionTest" }}'
+      start: |
+        {{ $d := .Decoration -}}
+        echo "{{ $d.Yellow }}Testing {{ .GetConfig "predictionTest" }}{{$d.Normal }}"
+        curl -X 'POST' \
+          'http://localhost:8000/predict' \
+          -H 'accept: application/json' \
+          -H 'Content-Type: application/json' \
+          -d '{
+          "data": {{ .ReadFile (.GetRelativePath (print "../predict-request/" (.GetConfig "predictionTest") ".json")) }}
+        }' 

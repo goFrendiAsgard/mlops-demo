@@ -56,8 +56,8 @@ def train(storage_path: str, min_datetime: str, max_datetime: str):
   model_path = os.path.join(storage_path, model_file_name)
   with open(model_path, 'wb') as model_file:
     pickle.dump(clf, model_file)
+  os.chmod(model_path, 0o777)
   print("Save model to %s" % model_file_name)
-
 
   # read config
   config_path = os.path.join(storage_path, 'config.json')
@@ -73,11 +73,12 @@ def train(storage_path: str, min_datetime: str, max_datetime: str):
   config.setdefault('model', model_file_name)
   config.setdefault('last_updated', datetime.datetime.now().strftime(date_format))
 
+  # get old model
   old_model_path = os.path.join(storage_path, config['model'])
   with open(old_model_path, 'rb') as model_file:
     old_clf = pickle.load(model_file)
 
-  # update config if necessary
+  # update config if new model is better than old model
   old_score = old_clf.score(X_test, y_test)
   if score >= old_score:
     config['model'] = model_file_name
@@ -85,6 +86,7 @@ def train(storage_path: str, min_datetime: str, max_datetime: str):
     config['last_updated'] = datetime.datetime.now().strftime(date_format)
     with open(config_path, 'w') as config_file:
       json.dump(config, config_file)
+    os.chmod(config_path, 0o777)
 
 
 if __name__ == '__main__':

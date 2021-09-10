@@ -42,6 +42,7 @@ class Generator():
         old_df = pd.read_csv(csv_path) if os.path.exists(csv_path) else pd.DataFrame([])
         new_df = pd.concat([old_df, *additional_df_list], ignore_index=True)
         new_df.to_csv(csv_path, index = False)
+        os.chmod(csv_path, 0o777)
         return GeneratorResponse(
             datetime = datetime_str,
             count_per_label = count_per_label,

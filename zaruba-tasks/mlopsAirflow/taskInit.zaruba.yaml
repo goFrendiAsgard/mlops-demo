@@ -31,7 +31,6 @@ tasks:
       - createMlopsAirflowDb
       - createMlopsAirflowConfiguratorScript
       - buildMlopsAirflowImage
-      - buildMlopsModelTrainerImage
     timeout: 1h
     inputs:
       - mlopsAirflowRunInLocal

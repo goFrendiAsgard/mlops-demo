@@ -15,6 +15,7 @@ configs:
       {{ .GetRelativePath "../../mlopsAirflow/plugins" }}:/opt/airflow/plugins
       {{ .GetRelativePath "../../mlopsStorage" }}:/opt/airflow/storage
     runInLocal: '{{ .GetValue "mlopsAirflowRunInLocal" }}'
+    user: airflow
 
   mlopsAirflowConfigurator:
     containerName: mlopsAirflowConfigurator

@@ -34,9 +34,4 @@ with DAG('modelTrainer_dag', default_args=default_args, schedule_interval='*/5 *
         python_callable=train_task
     )
 
-    t3 = BashOperator(
-        task_id="change_permission",
-        bash_command=f"chmod 777 {storage_path}/*.*"
-    )
-
-    t1 >> t2 >> t3
+    t1 >> t2
